@@ -1,0 +1,33 @@
+/* ---------- variables ---------- */
+
+/* ---------- mixins ---------- */
+
+@mixin font($font_name, $file_name, $weight, $style) {
+
+@font-face {
+font-family: $font_name;
+font-display: swap;
+src: url("../fonts/#{$file_name}.woff") format("woff"), url("../fonts/#{$file_name}.woff2") format("woff2");
+font-weight: #{$weight};
+font-style: #{$style};
+}
+}
+
+@mixin size($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+@mixin flex($flex-direction, $justify-content, $align-items, $flex-wrap){
+  display: flex;
+  flex-direction: $flex-direction;
+  justify-content: $justify-content;
+  align-items: $align-items;
+  flex-wrap: $flex-wrap;
+}
+
+@mixin adaptiveFormula ($attribute, $min-size, $max-size) {
+  #{$attribute}: calc(#{$min-size + px} + (#{$max-size} - #{$min-size}) * ((100vw - 320px) / (1500 - 320)));
+}
+
+/* ---------- templates ---------- */
