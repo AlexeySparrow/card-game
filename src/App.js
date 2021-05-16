@@ -1,125 +1,70 @@
-import "./app.css"
+import React, {useCallback} from "react";
+import style from "./onlyStyleFile.module.scss";
+import {useDispatch, useSelector} from "react-redux";
+import shirt from "./assets/img/shirt.png";
+import {CreateNewArrayFullPackCards} from "./functions/CreateNewArrayFullPackCards";
+import {setActiveCard, setFirstCardSelected, setSecondCardSelected} from "./store/redusers/cardsReducer";
+import {ShuffleArrayCards} from "./functions/ShuffleArrayCards";
+import {LogicPairwiseSelectionCards} from "./functions/LogicPairwiseSelectionCards";
 
-function App() {
+export const App = () => {
+    let dispatch = useDispatch()
 
-    const cards = document.querySelectorAll('.memory-card');
+    /* ----- cards data ----- */
+    const cardsArray = useSelector(state => state.cards.shuffleArrayCards)
 
-    let hasFlippedCard = false;
-    let lockBoard = false;
-    let firstCard, secondCard;
+    /* ----- create new array full pack cards ----- */
+    CreateNewArrayFullPackCards()
 
-    function flipCard() {
-        if (lockBoard) return;
-        if (this === firstCard) return;
+    /* ----- toggle class card for flip ----- */
+    /* lock board */
+    const lock = useSelector(state => state.cards.lockBoard)
+    /* set active flip card */
+    const setActiveCards = useCallback((id, active) => dispatch(setActiveCard(id, active)), [dispatch])
 
-        this.classList.add('flip');
-
-        if (!hasFlippedCard) {
-            hasFlippedCard = true;
-            firstCard = this;
-
-            return;
-        }
-
-        secondCard = this;
-        checkForMatch();
+    const flipCard = (id) => {
+        if (lock) return
+        setActiveCards(id, true)
     }
 
-    function checkForMatch() {
-        let isMatch = firstCard.dataset.framework === secondCard.dataset.framework;
+    /* ----- shuffle cards ----- */
+    ShuffleArrayCards()
 
-        isMatch ? disableCards() : unflipCards();
+    /* ----- pairwise selection cards ----- */
+    /* view first and second cards */
+    const firstCard = useSelector(state => state.cards.firstCardSelected)
+    const secondCard = useSelector(state => state.cards.secondCardSelected)
+
+    /* set first and second cards */
+    const setFirstCard = useCallback((e) => dispatch(setFirstCardSelected(e)), [dispatch])
+    const setSecondCard = useCallback((e) => dispatch(setSecondCardSelected(e)), [dispatch])
+
+    const setFirstAndSecondCards = (item) => {
+        if (!firstCard) setFirstCard(item)
+        if (firstCard && !secondCard) setSecondCard(item)
     }
 
-    function disableCards() {
-        firstCard.removeEventListener('click', flipCard);
-        secondCard.removeEventListener('click', flipCard);
+    LogicPairwiseSelectionCards()
 
-        resetBoard();
-    }
-
-    function unflipCards() {
-        lockBoard = true;
-
-        setTimeout(() => {
-            firstCard.classList.remove('flip');
-            secondCard.classList.remove('flip');
-
-            resetBoard();
-        }, 1500);
-    }
-
-    function resetBoard() {
-        [hasFlippedCard, lockBoard] = [false, false];
-        [firstCard, secondCard] = [null, null];
-    }
-
-    (function shuffle() {
-        cards.forEach(card => {
-            let randomPos = Math.floor(Math.random() * 12);
-            card.style.order = randomPos;
-        });
-    })();
-
-    cards.forEach(card => card.addEventListener('click', flipCard));
-
-  return (
-      <section className="memory-game">
-        <div className="memory-card" data-framework="aurelia">
-          <img className="front-face" src="img/aurelia.svg" alt="Aurelia"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="aurelia">
-          <img className="front-face" src="img/aurelia.svg" alt="Aurelia"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-
-        <div className="memory-card" data-framework="vue">
-          <img className="front-face" src="img/vue.svg" alt="Vue"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="vue">
-          <img className="front-face" src="img/vue.svg" alt="Vue"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-
-        <div className="memory-card" data-framework="angular">
-          <img className="front-face" src="img/angular.svg" alt="Angular"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="angular">
-          <img className="front-face" src="img/angular.svg" alt="Angular"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-
-        <div className="memory-card" data-framework="ember">
-          <img className="front-face" src="img/ember.svg" alt="Ember"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="ember">
-          <img className="front-face" src="img/ember.svg" alt="Ember"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-
-        <div className="memory-card" data-framework="backbone">
-          <img className="front-face" src="img/backbone.svg" alt="Backbone"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="backbone">
-          <img className="front-face" src="img/backbone.svg" alt="Backbone"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-
-        <div className="memory-card" data-framework="react">
-          <img className="front-face" src="img/react.svg" alt="React"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-        <div className="memory-card" data-framework="react">
-          <img className="front-face" src="img/react.svg" alt="React"/>
-          <img className="back-face" src="img/js-badge.svg" alt="JS Badge"/>
-        </div>
-      </section>
-  );
+    return (
+        <main className={style.wrapper}>
+            <section className={style.container}>
+                {
+                    cardsArray.map((item, idx) =>
+                        <div
+                            key={idx}
+                            className={`${style.card} ${item.active ? style.flip : null}`}
+                            onClick={() => {
+                                flipCard(item.id)
+                                setFirstAndSecondCards(item)
+                            }}
+                        >
+                            <img src={item.img} alt={item.name + item.index}/>
+                            <img src={shirt} alt="shirt"/>
+                        </div>
+                    )
+                }
+            </section>
+        </main>
+    )
 }
-
-export default App;

@@ -1,0 +1,46 @@
+@import "./assets/scss/mixins";
+
+.wrapper {
+  @include size(100%, 100vh);
+  @include flex(row, center, center, nowrap);
+  background: url("assets/img/background.png") repeat;
+  overflow: hidden;
+}
+
+.container {
+  @include size(450px, 100%);
+  @include flex(row, space-between, stretch, wrap);
+  padding: 10px;
+  perspective: 1000px;
+}
+
+.card {
+  @include size(calc(25% - 10px), calc(25% - 10px));
+  position: relative;
+  transform: scale(1);
+  transform-style: preserve-3d;
+  transition: 0.5s;
+
+  &:active {
+    transform: scale(0.97);
+    transition: 0.2s;
+  }
+
+  &.flip {
+    transform: rotateY(180deg);
+  }
+
+  img {
+    @include size(100%, 100%);
+    border-radius: 10px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+
+    &:first-child {
+      transform: rotateY(180deg);
+    }
+  }
+}
