@@ -1,9 +1,9 @@
-@import "./assets/scss/mixins";
+@import "mixins";
 
 .wrapper {
   @include size(100%, 100vh);
   @include flex(row, center, center, nowrap);
-  background: url("assets/img/background.png") repeat;
+  background: url("../img/background.png") repeat;
   overflow: hidden;
 }
 

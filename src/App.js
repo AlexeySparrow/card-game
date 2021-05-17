@@ -1,5 +1,5 @@
 import React, {useCallback} from "react";
-import style from "./onlyStyleFile.module.scss";
+import style from "./assets/scss/onlyStyleFile.module.scss";
 import {useDispatch, useSelector} from "react-redux";
 import shirt from "./assets/img/shirt.png";
 import {CreateNewArrayFullPackCards} from "./functions/CreateNewArrayFullPackCards";
@@ -23,7 +23,6 @@ export const App = () => {
     const setActiveCards = useCallback((id, active) => dispatch(setActiveCard(id, active)), [dispatch])
 
     const flipCard = (id) => {
-        if (lock) return
         setActiveCards(id, true)
     }
 
@@ -46,6 +45,7 @@ export const App = () => {
 
     LogicPairwiseSelectionCards()
 
+
     return (
         <main className={style.wrapper}>
             <section className={style.container}>
@@ -55,8 +55,10 @@ export const App = () => {
                             key={idx}
                             className={`${style.card} ${item.active ? style.flip : null}`}
                             onClick={() => {
-                                flipCard(item.id)
-                                setFirstAndSecondCards(item)
+                                if(!item.active || lock) {
+                                    flipCard(item.id)
+                                    setFirstAndSecondCards(item)
+                                }
                             }}
                         >
                             <img src={item.img} alt={item.name + item.index}/>
