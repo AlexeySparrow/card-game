@@ -12,3 +12,7 @@
   align-items: $align-items;
   flex-wrap: $flex-wrap;
 }
+
+@mixin adaptiveFormula($attribute, $min-size, $max-size) {
+  #{$attribute}: calc(#{$min-size + px} + (#{$max-size} - #{$min-size}) * ((100vw - 320px) / (1500 - 320)));
+}

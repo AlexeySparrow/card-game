@@ -5,6 +5,7 @@ const SHUFFLE_ARRAY_CARDS = 'SHUFFLE_ARRAY_CARDS'
 const FIRST_CARD_SELECTED = 'FIRST_CARD_SELECTED'
 const SECOND_CARD_SELECTED = 'SECOND_CARD_SELECTED'
 const LOCK_BOARD = 'LOCK_BOARD'
+const FINISH = 'FINISH'
 
 let initialState = {
     cards: [
@@ -21,7 +22,8 @@ let initialState = {
     shuffleArrayCards: [],
     firstCardSelected: null,
     secondCardSelected: null,
-    lockBoard: false
+    lockBoard: false,
+    finish: false
 }
 
 export const cardsReducer = (state = initialState, action) => {
@@ -65,6 +67,11 @@ export const cardsReducer = (state = initialState, action) => {
                 ...state,
                 lockBoard: action.lockBoard
             }
+        case FINISH:
+            return {
+                ...state,
+                finish: action.finish
+            }
         default:
             return state;
     }
@@ -77,3 +84,4 @@ export const setShuffleArrayCards = (shuffleArrayCards) => ({type: SHUFFLE_ARRAY
 export const setFirstCardSelected = (firstCardSelected) => ({type: FIRST_CARD_SELECTED, firstCardSelected})
 export const setSecondCardSelected = (secondCardSelected) => ({type: SECOND_CARD_SELECTED, secondCardSelected})
 export const setLockBoard = (lockBoard) => ({type: LOCK_BOARD, lockBoard})
+export const setFinish = (finish) => ({type: FINISH, finish})
