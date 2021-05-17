@@ -8,7 +8,8 @@
 }
 
 .container {
-  @include size(450px, 100%);
+  width: calc(450px + (600 - 450) * ((100vh - 780px) / (1080 - 780)));
+  height: 100%;
   @include flex(row, space-between, stretch, wrap);
   padding: 10px;
   perspective: 1000px;
